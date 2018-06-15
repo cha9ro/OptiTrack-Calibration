@@ -1,7 +1,7 @@
 ##########################################
 # If corresponding point set is already got
 # (If it's the first time, set 'False')
-PointsAlreadyGot = False
+PointsAlreadyGot = True
 
 # Resolution of projection window
 WIDTH = 1920

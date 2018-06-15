@@ -52,27 +52,14 @@ def main():
     camera_matrix[2][2] = 1
     retval,camera_matrix,dist_coefs,rvecs,tvecs = cv2.calibrateCamera([objPoints],[imgPoints],size,camera_matrix,dist_coefs, flags = cv2.CALIB_USE_INTRINSIC_GUESS)
 
+    # write files of np array
     f = open("retval.txt", "w")
     f.write(str(retval))
     f.close()
-    f = open("camera_matrix.txt", "w")
-    for i in range(3):
-        for j in range(3):
-            f.write(str(camera_matrix[i][j]) + ',')
-        f.write('\n')
-    f.close()
-    f = open("dist_coefs.txt", "w")
-    for i in range(len(dist_coefs)):
-        f.write(str(dist_coefs[i]) + ',')
-    f.close()
-    f = open("rvecs.txt", "w")
-    for i in range(len(rvecs)):
-        f.write(str(rvecs[i]) + ',')
-    f.close()
-    f = open("tvecs.txt", "w")
-    for i in range(len(tvecs)):
-        f.write(str(tvecs[i]) + ',')
-    f.close()
+    np.savetxt('camera_matrix.txt', camera_matrix, fmt = '%.08f', delimiter = ',', newline = '\n')
+    np.savetxt('tvecs.txt', tvecs[0], fmt = '%.08f', delimiter=',', newline='\n')
+    np.savetxt('rvecs.txt', rvecs[0], fmt = '%.08f', delimiter=',', newline='\n')
+    np.savetxt('dist_coefs.txt', dist_coefs, fmt = '%.08f', delimiter=',', newline='\n')
 
     #################
     print("retval")
@@ -120,17 +107,26 @@ def readData(fileName):
 def onMouse(event, x, y, flags, param):
     global n
     if event == cv2.EVENT_LBUTTONDOWN:
-        n += 1
         calibObjPos = getObjPos(CALIB_OBJ)
-        imgInp.append([x, y])
-        objInp.append(calibObjPos)
-        print (n, "(x,y)=(%d,%d), (X,Y,Z)=(%f,%f,%f)" % (x,y,calibObjPos[0], calibObjPos[1], calibObjPos[2]))
+        if calibObjPos != None:
+            n += 1
+            imgInp.append([x, y])
+            objInp.append(calibObjPos)
+            print (n, "(x,y)=(%d,%d), (X,Y,Z)=(%f,%f,%f)" % (x,y,calibObjPos[0], calibObjPos[1], calibObjPos[2]))
+        else:
+            print ('CalibObj is not tracked')
 
 def getObjPos(ObjName):
     client = natnet.NatClient(client_ip = '127.0.0.1', data_port = 1511, comm_port = 1510)
     obj = client.rigid_bodies[ObjName]
-    objPos = [val * 1000 for val in obj.position] # [m] -> [mm]
-    return objPos
+    if obj.seen:
+        x = obj.position[0]
+        y = obj.position[1]
+        z = obj.position[2]
+        objPos = [x, -y, -z] # make a line
+        return objPos
+    else:
+        return None
 
 
 if __name__ == '__main__':
