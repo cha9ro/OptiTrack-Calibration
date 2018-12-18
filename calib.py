@@ -7,9 +7,7 @@ from setting import *
 n = 0
 imgInp = []
 objInp = []
-# File name
-IMG_INPUT_FILE = "imgInput.txt"
-OBJ_INPUT_FILE = "objInput.txt"
+
 
 def main():
     if not PointsAlreadyGot:
@@ -45,25 +43,17 @@ def main():
     rvecs = np.zeros(3, "float32")
     tvecs = np.zeros(3, "float32")
     size = (WIDTH, HEIGHT)
-    camera_matrix[0][0] = 1600
-    camera_matrix[1][1] = 1600
-    camera_matrix[0][2] = 1000
-    camera_matrix[1][2] = 500
+    # Initialize the parameters
+    camera_matrix[0][0] = FOCAL_LENGTH/(SCREEN_WIDTH/WIDTH)
+    camera_matrix[1][1] = FOCAL_LENGTH/(SCREEN_HEIGHT/HEIGHT)
+    camera_matrix[0][2] = WIDTH/2
+    camera_matrix[1][2] = HEIGHT/2
     camera_matrix[2][2] = 1
-    retval,camera_matrix,dist_coefs,rvecs,tvecs = cv2.calibrateCamera([objPoints],[imgPoints],size,camera_matrix,dist_coefs, flags = cv2.CALIB_USE_INTRINSIC_GUESS)
 
-    # write files of np array
-    f = open("retval.txt", "w")
-    f.write(str(retval))
-    f.close()
-    np.savetxt('camera_matrix.txt', camera_matrix, fmt = '%.08f', delimiter = ',', newline = '\n')
-    np.savetxt('tvecs.txt', tvecs[0], fmt = '%.08f', delimiter=',', newline='\n')
-    np.savetxt('rvecs.txt', rvecs[0], fmt = '%.08f', delimiter=',', newline='\n')
-    np.savetxt('dist_coefs.txt', dist_coefs, fmt = '%.08f', delimiter=',', newline='\n')
-
-    #################
-    print("retval")
-    print(retval)
+    ######## values before computation##############
+    print("-----initial parameters-----")
+    # print("retval")
+    # print(retval)
     print("camera_matrix")
     print(camera_matrix)
     print("dist_coefs")
@@ -72,7 +62,60 @@ def main():
     print(rvecs)
     print("tvecs")
     print(tvecs)
-    #################
+    print("-----input data-----")
+    print("objPoints")
+    print(objPoints)
+    print("imgPoints")
+    print(imgPoints)
+    print("-----------------")
+    ################################################
+
+    # Calculate the parameters
+    retval,camera_matrix,dist_coefs,rvecs,tvecs = cv2.calibrateCamera([objPoints], [imgPoints], size, camera_matrix, dist_coefs, flags = cv2.CALIB_USE_INTRINSIC_GUESS)
+
+    # Write file of extrinsic parameters (R matrix)
+    R = np.zeros((3,3), dtype=np.float32)
+    rvec = np.array([rvecs[0][0], rvecs[0][1], -rvecs[0][2]], dtype=np.float32)
+    cv2.Rodrigues(rvec, R)
+
+    # t_world: translate vector based on world coordinate
+    Rinv = np.linalg.inv(R)
+    t_world = np.dot(Rinv, tvecs[0])
+
+    # Extrinsic paramters (R|t)
+    r = np.zeros(3, dtype=np.float32)
+    R = np.concatenate([R, [r]])
+    tvec = np.array([tvecs[0][0], tvecs[0][1], -tvecs[0][2], 1], dtype=np.float32)
+    tvec = np.transpose([tvec])
+    Rt = np.concatenate([R, tvec], axis=1)
+
+
+    # write files of np array (directly from OpenCV parameters)
+    f = open(RETVAL_FILENAME, "w")
+    f.write(str(retval))
+    f.close()
+    np.savetxt(CAMERA_MATRIX_FILENAME, camera_matrix, fmt = '%.08f', delimiter = ',', newline = '\n')
+    np.savetxt(TVECS_FILENAME, tvecs[0], fmt = '%.08f', delimiter=',', newline='\n')
+    np.savetxt(RVECS_FILENAME, rvecs[0], fmt = '%.08f', delimiter=',', newline='\n')
+    np.savetxt(DIST_FILENAME, dist_coefs, fmt = '%.08f', delimiter=',', newline='\n')
+
+    np.savetxt(EXTRINSIC_FILENAME, Rt, fmt = '%.08f', delimiter=',', newline='\n')
+    np.savetxt(TVEC_WORLD_FILENAME, t_world, fmt = '%.08f', delimiter=',', newline='\n')
+
+    ####### check the computed values ##########
+    print("retval")
+    print(retval)
+    print("camera_matrix")
+    print(camera_matrix)
+    print("dist_coefs")
+    print(dist_coefs)
+    print("rvecs")
+    print(rvecs[0])
+    print("tvecs")
+    print(tvecs[0])
+    print("extrinsic")
+    print(Rt)
+    ############################################
 
 def writeInput(fileName, array):
     f = open(fileName, "w")
@@ -123,7 +166,7 @@ def getObjPos(ObjName):
         x = obj.position[0]
         y = obj.position[1]
         z = obj.position[2]
-        objPos = [x, -y, -z] # make a line
+        objPos = [x, y, z] # make a line
         return objPos
     else:
         return None
