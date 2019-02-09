@@ -25,6 +25,8 @@ def main():
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
+
+
         # write input file
         writeInput(IMG_INPUT_FILE, imgInp)
         writeInput(OBJ_INPUT_FILE, objInp)
@@ -62,11 +64,11 @@ def main():
     print(rvecs)
     print("tvecs")
     print(tvecs)
-    print("-----input data-----")
-    print("objPoints")
-    print(objPoints)
-    print("imgPoints")
-    print(imgPoints)
+    # print("-----input data-----")
+    # print("objPoints")
+    # print(objPoints)
+    # print("imgPoints")
+    # print(imgPoints)
     print("-----------------")
     ################################################
 
@@ -164,8 +166,8 @@ def getObjPos(ObjName):
     obj = client.rigid_bodies[ObjName]
     if obj.seen:
         x = obj.position[0]
-        y = obj.position[1]
-        z = obj.position[2]
+        y = -obj.position[1]
+        z = -obj.position[2]
         objPos = [x, y, z] # make a line
         return objPos
     else:

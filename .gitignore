@@ -102,3 +102,15 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Others
+.vscode/
+__pycache__/
+
+4K/
+4KLeft/
+4KRight/
+4KStereo/
+K/
+TEST/
+
