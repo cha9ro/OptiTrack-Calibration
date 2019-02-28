@@ -18,7 +18,7 @@ Mostly used for projection mapping system.
     - ```WIDTH, HEIGHT```: Resolution of projection image [pixel]
     - ```SCREEN_WIDTH, SCREEN_HEIGHT```: The approximate size of the projected screen/target [mm]
     - ```FOCAL_LENGTH```: The approximate distance between the projector and projected screen [mm]
-    - ```Ox, Oy```: The upper-left position of the projection window.
+    - ```Ox, Oy```: The upper-left position of the projection window [pixel].
     - ```CALIB_OBJ```: The name of calibration object registered as rigidbody in Motive
     - ```DIR_NAME```: Directory name in which the computed data is saved. This ```DIR_NAME``` is added to the each file name, i.g. ```camera_matrixDIR_NAME.txt```
 
