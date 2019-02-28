@@ -1,8 +1,0 @@
-<?xml version="1.0" ?>
-<ExtrinsicParameters>
-  <tvec>
-    <tvec_x>x</tvec_x>
-    <tvec_y>y</tvec_y>
-    <tvec_z>z</tvec_z>
-  </tvec>
-</ExtrinsicParameters>

@@ -22,11 +22,12 @@ Oy = 0
 CALIB_OBJ = 'CalibObj'
 
 # Directory Name (This is added to the end of the each file name ex: camera_matrixDIR_NAME.txt )
-DIR_NAME = '4KRight'
+DIR_NAME = 'TEST'
 
 # File names of the parameters (output)
 EXTENSION = '.txt'
-CAMERA_MATRIX_FILENAME = DIR_NAME + '/' + 'camera_matrix' + DIR_NAME + EXTENSION
+CAMERA_MATRIX_FILENAME = DIR_NAME + '/' + \
+    'camera_matrix' + DIR_NAME + EXTENSION
 TVECS_FILENAME = DIR_NAME + '/' + 'tvecs' + DIR_NAME + EXTENSION
 RVECS_FILENAME = DIR_NAME + '/' + 'rvecs' + DIR_NAME + EXTENSION
 EXTRINSIC_FILENAME = DIR_NAME + '/' + 'extrinsic' + DIR_NAME + EXTENSION
