@@ -104,7 +104,7 @@ venv.bak/
 .mypy_cache/
 
 # Others
-.vscode/
+.vscode
 __pycache__/
 
 4K/
