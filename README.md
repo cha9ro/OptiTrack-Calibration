@@ -21,7 +21,6 @@ Calibration program to compute intrinsic and extrinsic parameters of projector u
 
 ### How to use
 1. Make sure OptiTrack cameras are connected and recognized in Motive.
-OptiTrack社のカメラが接続され、Motive上でも認識されていることを確認する。
 
 1. Enter the following parameters in [`setting.py`](./setting.py).
     - `PointsAlreadyGot`: Whether you already have correspondences (`boolean`).
