@@ -1,4 +1,71 @@
 # OptiTrack-Calibration
+## English
+### Abstract
+Calibration program to compute intrinsic and extrinsic parameters of projector using OptiTrack System.
+
+1. Input necessary parameters values in [`setting.py`](./setting.py).
+
+1. Get correspondences between 2-dim point on projector window and 3-dim point in world coordinate.
+2-dim point is obtained with mouse cursor and 3-dim point is measured by Motive, OptiTrack.
+
+1. Using the correspondences above, the program calibrate projector with the core computation from OpenCV [`calibrateCamera`](https://docs.opencv.org/3.4.5/d9/d0c/group__calib3d.html#ga3207604e4b1a1758aa66acb6ed5aa65d).
+
+### Preparation
+- Install Python3 ([Reference](https://realpython.com/installing-python/)).
+- Install Python modules `opencv-python` and `NatNetClient`.
+    ```Bash
+    pip install opencv-python
+    pip install NatNetClient
+    ```
+- Install [Motive](https://optitrack.com/products/motive/) by OptiTrack.
+
+### How to use
+1. Make sure OptiTrack cameras are connected and recognized in Motive.
+OptiTrack社のカメラが接続され、Motive上でも認識されていることを確認する。
+
+1. Enter the following parameters in [`setting.py`](./setting.py).
+    - `PointsAlreadyGot`: Whether you already have correspondences (`boolean`).
+
+    - `WIDTH, HEIGHT`: Projector resolution [pixel].
+    
+    - `SCREEN_WIDTH, SCREEN_HEIGHT`: Physical projected size [mm]. 
+    They don't have to be very accurate.
+
+    - `FOCAL_LENGTH`: Physical distance between projector and projected target [mm]. 
+    They don't have to be very accurate.
+    
+    - `Ox, Oy`: The top-left position of the projection window on the running computer [pixel].
+    
+    - `CALIB_OBJ`: The name of calibration object registered in Motive.
+    The calibration object needs to be registered in Motive as rigidbody for Motive to obtain 3-dim position and rotation.
+    It is set as `CalibObj` as default.
+    
+    - `DIR_NAME`: Directory name in which the result is saved.
+    This `DIR_NAME` is also used for each output files, e.g., `camera_matrix_DIR_NAME.txt` is an output file to store camera matrix.
+
+1. Run [`calib.py`](./calib.py).
+    ```bash
+    python calib.py
+    ```
+
+1. Get correspondences if you set `PointsAlreadyGot` to `False` as follows;
+    1. Move the mouse cursor onto the projection window.
+
+    1. Move `CalibObj` and mouse cursor so their centers are both overlapped.
+
+    1. Left-click. 
+    It shows obtained 2-dim and 3-dim positions if it successes, otherwise it shows `CalibObj is missing`.
+
+    1. Iterate the above procedures until getting around 20 correspondences.
+
+    1. Enter an arbitrary key to start the computation.
+
+1. The result are stored in `DIR_NAME`.
+
+
+
+## 日本語
+### 概要
 プロジェクタのキャリブレーション（内部パラメータ・外部パラメータ）のプログラム。
 大まかな処理の流れは以下の通り。
 1. 必要なパラメータを [`setting.py`](./setting.py) 入力する。
@@ -9,7 +76,7 @@
 1. 取得した対応点の組を用いてOpenCVの [`calibrateCamera`](https://docs.opencv.org/3.4.5/d9/d0c/group__calib3d.html#ga3207604e4b1a1758aa66acb6ed5aa65d) でプロジェクタのキャリブレーションを行う。
 中の計算は[こちらのサイト](https://kamino.hatenablog.com/entry/opencv_calibrate_camera)が参考になる。
 
-## インストール
+### インストール
 - Python 3 (と pip) をインストールする（[参考](https://realpython.com/installing-python/)）。
 - Pythonのモジュール `opencv-python` と `NatNetClient` をインストールする。
     ```Bash
@@ -17,7 +84,7 @@
     pip install NatNetClient
     ```
 
-## 使い方
+### 使い方
 1. OptiTrack社のカメラが接続され、Motive上でも認識されていることを確認する。
 
 1. 以下のパラメータを [`setting.py`](./setting.py) に入力する。
